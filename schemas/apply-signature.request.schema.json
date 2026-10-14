@@ -1,0 +1,33 @@
+{
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/apply-signature.request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "challenge_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Challenge Id",
+      "type": "string"
+    },
+    "reason": {
+      "maxLength": 1000,
+      "minLength": 5,
+      "title": "Reason",
+      "type": "string"
+    },
+    "reauthentication_token": {
+      "description": "ID token from re-authentication with nonce",
+      "maxLength": 8192,
+      "minLength": 20,
+      "title": "Reauthentication Token",
+      "type": "string"
+    }
+  },
+  "required": [
+    "challenge_id",
+    "reauthentication_token",
+    "reason"
+  ],
+  "title": "ApplySignature",
+  "type": "object"
+}

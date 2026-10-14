@@ -1,0 +1,111 @@
+# GxP runtime policy, evaluated by the agentic-core PolicyEngine for every
+# agent action request (after the identity fabric's own decision).
+# Combining: deny overrides, then require_approval, then allow; default deny.
+#
+# Facts:
+#   subject.scopes, subject.action_in_scope (credential carries the scope),
+#   subject.delegated, subject.delegation_depth
+#   resource.definition_status (draft|validated|retired),
+#   resource.system_status (validated|suspended|retired),
+#   resource.system_review_overdue, resource.gamp_category (1,3,4,5),
+#   resource.creates_gxp_record, resource.reversible,
+#   resource.risk_class (1 highest .. 3), resource.risk_priority_rank (1 low .. 3 high),
+#   resource.alcoa_passed, resource.fabric_decision (allow|require_approval|none)
+#
+# Signatures required by risk priority are added by the GAMP 5 classifier;
+# a require_approval outcome with no risk-driven signature requires one
+# process-owner approval.
+name: gxp-runtime
+version: "2026.10.0"
+rules:
+  - id: deny-unvalidated-definition
+    description: Only validated action definition versions may execute.
+    effect: deny
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: resource.definition_status, operator: ne, value: validated}
+
+  - id: deny-system-not-validated
+    description: The target system must be in a validated state.
+    effect: deny
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: resource.system_status, operator: ne, value: validated}
+
+  - id: deny-periodic-review-overdue
+    description: A system whose periodic review is overdue cannot be changed by agents.
+    effect: deny
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: resource.system_review_overdue, operator: eq, value: true}
+
+  - id: deny-data-integrity-failure
+    description: Requests failing any ALCOA+ check are refused and recorded.
+    effect: deny
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: resource.alcoa_passed, operator: eq, value: false}
+
+  - id: deny-out-of-scope
+    description: The agent credential must carry the action as a scope.
+    effect: deny
+    actions: ["gxp:*"]
+    conditions:
+      - {attribute: subject.action_in_scope, operator: eq, value: false}
+
+  - id: deny-deep-delegation
+    description: GxP actions may be delegated through at most one hop.
+    effect: deny
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: subject.delegation_depth, operator: gt, value: 1}
+
+  - id: approve-medium-or-high-risk
+    description: GAMP 5 risk priority medium or high needs electronic signatures.
+    effect: require_approval
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: resource.risk_priority_rank, operator: gte, value: 2}
+
+  - id: approve-gxp-record-creation
+    description: Creating or changing a GxP record needs an accountable human signature.
+    effect: require_approval
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: resource.creates_gxp_record, operator: eq, value: true}
+
+  - id: approve-irreversible
+    description: Irreversible actions need human approval.
+    effect: require_approval
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: resource.reversible, operator: eq, value: false}
+
+  - id: approve-delegated
+    description: Actions performed under delegation need human approval.
+    effect: require_approval
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: subject.delegated, operator: eq, value: true}
+
+  - id: approve-fabric-escalation
+    description: Honour an approval requirement raised by the identity fabric.
+    effect: require_approval
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: resource.fabric_decision, operator: eq, value: require_approval}
+
+  - id: allow-scoped-low-risk
+    description: Low-risk, reversible, non-record actions in scope may run autonomously.
+    effect: allow
+    actions: ["gxp:execute:*"]
+    conditions:
+      - {attribute: subject.action_in_scope, operator: eq, value: true}
+      - {attribute: resource.risk_priority_rank, operator: eq, value: 1}
+
+  - id: allow-catalog-read
+    description: Agents holding gxp:read may read the action catalog and their own records.
+    effect: allow
+    actions: ["gxp:read"]
+    conditions:
+      - {attribute: subject.action_in_scope, operator: eq, value: true}

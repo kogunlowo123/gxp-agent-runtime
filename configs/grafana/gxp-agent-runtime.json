@@ -1,0 +1,60 @@
+{
+  "title": "GxP Agent Runtime",
+  "uid": "gxp-agent-runtime",
+  "schemaVersion": 39,
+  "time": {"from": "now-24h", "to": "now"},
+  "templating": {
+    "list": [
+      {"name": "datasource", "type": "datasource", "query": "prometheus"}
+    ]
+  },
+  "panels": [
+    {
+      "id": 1, "type": "stat", "title": "Request success (5m)",
+      "gridPos": {"x": 0, "y": 0, "w": 6, "h": 4},
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
+      "fieldConfig": {"defaults": {"unit": "percentunit", "decimals": 3}},
+      "targets": [{"expr": "1 - gxp:request_errors:ratio_5m"}]
+    },
+    {
+      "id": 2, "type": "timeseries", "title": "Action requests by outcome and risk priority",
+      "gridPos": {"x": 6, "y": 0, "w": 9, "h": 8},
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
+      "targets": [{"expr": "sum by (outcome, priority) (rate(gxp_action_requests_total[5m]))", "legendFormat": "{{outcome}} {{priority}}"}]
+    },
+    {
+      "id": 3, "type": "timeseries", "title": "Executions by system and status",
+      "gridPos": {"x": 15, "y": 0, "w": 9, "h": 8},
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
+      "targets": [{"expr": "sum by (system, status) (increase(gxp_executions_total[1h]))", "legendFormat": "{{system}} {{status}}"}]
+    },
+    {
+      "id": 4, "type": "timeseries", "title": "Electronic signatures and rejected attempts",
+      "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
+      "targets": [
+        {"expr": "sum by (meaning) (increase(gxp_electronic_signatures_total[1h]))", "legendFormat": "{{meaning}}"},
+        {"expr": "sum by (reason) (increase(gxp_signature_failures_total[1h]))", "legendFormat": "rejected {{reason}}"}
+      ]
+    },
+    {
+      "id": 5, "type": "timeseries", "title": "ALCOA+ failures by principle",
+      "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
+      "targets": [{"expr": "sum by (principle, stage) (increase(gxp_alcoa_failures_total[1h]))", "legendFormat": "{{stage}} {{principle}}"}]
+    },
+    {
+      "id": 6, "type": "timeseries", "title": "Validated-system call p99",
+      "gridPos": {"x": 0, "y": 16, "w": 12, "h": 7},
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
+      "fieldConfig": {"defaults": {"unit": "s"}},
+      "targets": [{"expr": "histogram_quantile(0.99, sum by (le, system) (rate(gxp_execution_duration_seconds_bucket[5m])))", "legendFormat": "{{system}}"}]
+    },
+    {
+      "id": 7, "type": "timeseries", "title": "Agent calls by channel",
+      "gridPos": {"x": 12, "y": 16, "w": 12, "h": 7},
+      "datasource": {"type": "prometheus", "uid": "${datasource}"},
+      "targets": [{"expr": "sum by (channel, operation) (rate(gxp_agent_channel_calls_total[5m]))", "legendFormat": "{{channel}} {{operation}}"}]
+    }
+  ]
+}

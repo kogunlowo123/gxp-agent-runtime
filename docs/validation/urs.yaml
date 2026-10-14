@@ -1,0 +1,151 @@
+# User requirements specification (URS) for the GxP agent runtime.
+# Each requirement is verified by tests marked @pytest.mark.urs("URS-nnn");
+# python -m gxp_agent_runtime.validation builds the traceability matrix and,
+# with --junit, records the executed result of every verifying test.
+system: gxp-agent-runtime
+requirements:
+  - id: URS-001
+    title: Registered action definitions only
+    requirement: >-
+      Agents can change validated systems only by invoking a registered, versioned
+      action definition whose input/output schemas and HTTP binding are fixed and
+      content-addressed by digest.
+    risk: high
+    references: ["21 CFR 11.10(a)", "GAMP 5 2nd ed. section 4"]
+  - id: URS-002
+    title: Validated systems only
+    requirement: >-
+      Actions execute only against systems registered in validated state with a
+      validation summary reference and HTTPS integration endpoint.
+    risk: high
+    references: ["21 CFR 11.10(a)", "EU GMP Annex 11 section 4"]
+  - id: URS-003
+    title: Part 11 electronic signatures
+    requirement: >-
+      Signatures require fresh re-authentication of the signer bound to a single-use
+      challenge, show printed name, date/time and meaning, and are cryptographically
+      linked to the signed record so they cannot be excised, copied or reused.
+    risk: high
+    references: ["21 CFR 11.50", "21 CFR 11.70", "21 CFR 11.100", "21 CFR 11.200(a)"]
+  - id: URS-004
+    title: GAMP 5 risk classification
+    requirement: >-
+      Every request is classified by severity, probability and detectability into a
+      risk class and risk priority with a recorded rationale.
+    risk: high
+    references: ["GAMP 5 2nd ed. Appendix M3", "ICH Q9(R1)"]
+  - id: URS-005
+    title: ALCOA+ data integrity checks
+    requirement: >-
+      Requests failing any ALCOA+ principle (attributable, legible, contemporaneous,
+      original, accurate, complete, consistent) are denied and recorded with reasons.
+    risk: high
+    references: ["MHRA GXP Data Integrity Guidance 2018", "FDA Data Integrity Q&A 2018"]
+  - id: URS-006
+    title: Risk-based approval
+    requirement: >-
+      High priority requires process-owner and QA approval; medium requires QA approval;
+      record-creating or irreversible low-priority actions require approval; only
+      low-risk, reversible, non-record actions run without a human.
+    risk: high
+    references: ["GAMP 5 2nd ed. section 5", "FDA CSA guidance 2025"]
+  - id: URS-007
+    title: Rejection
+    requirement: An authorised signer can reject a pending action with a reason; it never executes.
+    risk: medium
+    references: ["21 CFR 11.10(f)"]
+  - id: URS-008
+    title: Separation of duties
+    requirement: >-
+      Two signatures on one request come from different people; definition authors and
+      review generators cannot approve their own work; roles gate each signature meaning.
+    risk: high
+    references: ["21 CFR 11.10(d)", "21 CFR 11.10(g)"]
+  - id: URS-009
+    title: Execution records
+    requirement: >-
+      Each execution produces a signed record with input, output and raw-response
+      digests, the signatures applied, risk and policy outcome, ALCOA+ assessment, and
+      is verified by reading it back from storage.
+    risk: high
+    references: ["21 CFR 11.10(b)", "21 CFR 11.10(c)", "21 CFR 11.10(e)"]
+  - id: URS-010
+    title: Approval window
+    requirement: Requests not approved within the configured window expire and cannot be signed.
+    risk: medium
+    references: ["GAMP 5 2nd ed. section 4"]
+  - id: URS-011
+    title: Definition lifecycle
+    requirement: >-
+      Definitions start as drafts, become executable only after a QA validation-approval
+      signature by someone other than the author, versions only increase, and retired
+      versions stop executing.
+    risk: high
+    references: ["21 CFR 11.10(k)", "EU GMP Annex 11 section 10"]
+  - id: URS-012
+    title: Overdue periodic review blocks execution
+    requirement: Agents cannot change a system whose periodic review is overdue.
+    risk: medium
+    references: ["EU GMP Annex 11 section 11"]
+  - id: URS-013
+    title: Agent identity and authorization
+    requirement: >-
+      Agent credentials are verified through agent-identity-fabric (introspection and
+      decision point) or offline against its keys; scopes and delegation depth are enforced.
+    risk: high
+    references: ["21 CFR 11.10(d)", "NIST SP 800-53 AC-6"]
+  - id: URS-014
+    title: No credentials in GxP records
+    requirement: Requests containing credential material are rejected before anything is stored.
+    risk: medium
+    references: ["NIST SP 800-53 IA-5", "OWASP LLM02:2025"]
+  - id: URS-015
+    title: Periodic review
+    requirement: >-
+      A periodic review summarises executions, failures, signatures, definition changes
+      and audit-trail integrity for a period, concludes on validated state, and is
+      approved by QA signature, which updates the system state.
+    risk: medium
+    references: ["EU GMP Annex 11 section 11", "GAMP 5 2nd ed. Appendix O8"]
+  - id: URS-016
+    title: Idempotent execution
+    requirement: >-
+      Retries after transient failures reuse the request id as idempotency key and
+      concurrent approvals cannot execute an action twice.
+    risk: high
+    references: ["GAMP 5 2nd ed. section 4"]
+  - id: URS-017
+    title: Audit trail
+    requirement: >-
+      Every decision and state change is written to a hash-chained, Ed25519-signed audit
+      trail; tampering is detected by verification; audit failure fails the operation.
+    risk: high
+    references: ["21 CFR 11.10(e)", "EU GMP Annex 11 section 9"]
+  - id: URS-018
+    title: Agent protocols
+    requirement: >-
+      MCP tools and the A2A JSON-RPC endpoint expose the same operations with the same
+      authentication, authorization and audit as the REST API.
+    risk: medium
+    references: ["MCP 2025-06-18", "A2A 0.3"]
+  - id: URS-019
+    title: Validation evidence
+    requirement: >-
+      The release produces a validation package tracing every requirement to the tests
+      that verify it, with their executed results and a package digest.
+    risk: medium
+    references: ["FDA CSA guidance 2025", "GAMP 5 2nd ed. Appendix D5"]
+  - id: URS-020
+    title: Fail closed
+    requirement: >-
+      Unavailable databases, identity services, key endpoints or validated systems never
+      result in unrecorded or unauthorised execution.
+    risk: high
+    references: ["NIST SP 800-53 SC-24"]
+  - id: URS-021
+    title: Operability
+    requirement: >-
+      The service exposes liveness, readiness (database), Prometheus metrics and
+      correlation IDs, and publishes its verification keys.
+    risk: low
+    references: ["ISO/IEC 27001:2022 8.16"]

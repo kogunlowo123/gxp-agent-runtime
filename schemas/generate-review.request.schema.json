@@ -1,0 +1,30 @@
+{
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/generate-review.request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "period_end": {
+      "format": "date-time",
+      "title": "Period End",
+      "type": "string"
+    },
+    "period_start": {
+      "format": "date-time",
+      "title": "Period Start",
+      "type": "string"
+    },
+    "system_id": {
+      "maxLength": 64,
+      "minLength": 2,
+      "title": "System Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "system_id",
+    "period_start",
+    "period_end"
+  ],
+  "title": "GenerateReview",
+  "type": "object"
+}

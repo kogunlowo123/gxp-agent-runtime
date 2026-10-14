@@ -1,0 +1,84 @@
+# PrometheusRule-compatible alert rules. Load with the Prometheus Operator
+# (wrap in a PrometheusRule) or a rule_files entry.
+# SLOs (docs/architecture/agent-specification.md):
+#   availability  99.9% of agent and signing requests succeed (non-5xx)
+#   latency       p99 /v1/action-requests < 2 s (includes validated-system call)
+#                 p99 /v1/signatures/challenges < 300 ms
+groups:
+  - name: gxp-agent-runtime.slo
+    rules:
+      - record: gxp:request_errors:ratio_5m
+        expr: |
+          sum(rate(gxp_http_request_duration_seconds_count{status=~"5.."}[5m]))
+          /
+          clamp_min(sum(rate(gxp_http_request_duration_seconds_count[5m])), 1e-9)
+
+      - alert: GxpErrorBudgetBurnFast
+        expr: gxp:request_errors:ratio_5m > (14.4 * 0.001)
+        for: 5m
+        labels: {severity: page}
+        annotations:
+          summary: GxP runtime burning its error budget 14x faster than sustainable
+          runbook: docs/runbooks/incident-response.md#elevated-5xx
+
+      - alert: GxpSubmitLatencyHigh
+        expr: |
+          histogram_quantile(0.99, sum by (le) (
+            rate(gxp_http_request_duration_seconds_bucket{route="/v1/action-requests"}[5m])
+          )) > 2
+        for: 10m
+        labels: {severity: ticket}
+        annotations:
+          summary: p99 action submission above 2 s
+          runbook: docs/runbooks/monitoring.md#latency
+
+  - name: gxp-agent-runtime.gxp
+    rules:
+      - alert: GxpExecutionFailures
+        expr: |
+          sum by (system) (increase(gxp_executions_total{status="failed"}[1h])) > 3
+        for: 0m
+        labels: {severity: page}
+        annotations:
+          summary: Repeated failed executions against a validated system; open a deviation
+          runbook: docs/runbooks/incident-response.md#failed-executions
+
+      - alert: GxpAlcoaFailuresOnRecords
+        expr: sum(increase(gxp_alcoa_failures_total{stage="record"}[1h])) > 0
+        for: 0m
+        labels: {severity: page}
+        annotations:
+          summary: An execution record failed an ALCOA+ check
+          runbook: docs/runbooks/incident-response.md#data-integrity
+
+      - alert: GxpSignatureFailureSpike
+        expr: sum(increase(gxp_signature_failures_total[15m])) > 10
+        for: 5m
+        labels: {severity: page}
+        annotations:
+          summary: Many rejected signing attempts; possible credential misuse
+          runbook: docs/runbooks/incident-response.md#signature-failures
+
+      - alert: GxpApprovalsExpiring
+        expr: sum(increase(gxp_pending_requests_expired_total[24h])) > 5
+        for: 0m
+        labels: {severity: ticket}
+        annotations:
+          summary: Agent requests are expiring before approvers sign them
+          runbook: docs/runbooks/monitoring.md#approval-backlog
+
+      - alert: GxpPeriodicReviewOverdue
+        expr: max(gxp_systems_review_overdue) > 0
+        for: 1h
+        labels: {severity: ticket}
+        annotations:
+          summary: A validated system's periodic review is overdue; agent actions are blocked
+          runbook: docs/runbooks/periodic-review.md
+
+      - alert: GxpNotReady
+        expr: sum(up{job="gxp-agent-runtime"}) < 2
+        for: 5m
+        labels: {severity: page}
+        annotations:
+          summary: Fewer than two runtime replicas are being scraped
+          runbook: docs/runbooks/incident-response.md#replicas-down

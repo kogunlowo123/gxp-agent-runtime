@@ -1,0 +1,481 @@
+{
+  "$defs": {
+    "AlcoaAssessment": {
+      "properties": {
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/AlcoaCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "checks"
+      ],
+      "title": "AlcoaAssessment",
+      "type": "object"
+    },
+    "AlcoaCheck": {
+      "properties": {
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "principle": {
+          "$ref": "#/$defs/AlcoaPrinciple"
+        }
+      },
+      "required": [
+        "principle",
+        "passed",
+        "detail"
+      ],
+      "title": "AlcoaCheck",
+      "type": "object"
+    },
+    "AlcoaPrinciple": {
+      "enum": [
+        "attributable",
+        "legible",
+        "contemporaneous",
+        "original",
+        "accurate",
+        "complete",
+        "consistent",
+        "enduring",
+        "available"
+      ],
+      "title": "AlcoaPrinciple",
+      "type": "string"
+    },
+    "ElectronicSignature": {
+      "description": "A Part 11 electronic signature, cryptographically linked to its record.",
+      "properties": {
+        "auth_methods": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Auth Methods",
+          "type": "array"
+        },
+        "auth_time": {
+          "format": "date-time",
+          "title": "Auth Time",
+          "type": "string"
+        },
+        "challenge_id": {
+          "title": "Challenge Id",
+          "type": "string"
+        },
+        "key_id": {
+          "title": "Key Id",
+          "type": "string"
+        },
+        "meaning": {
+          "$ref": "#/$defs/SignatureMeaning"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "record_digest": {
+          "title": "Record Digest",
+          "type": "string"
+        },
+        "record_id": {
+          "title": "Record Id",
+          "type": "string"
+        },
+        "record_type": {
+          "$ref": "#/$defs/RecordType"
+        },
+        "signature_id": {
+          "title": "Signature Id",
+          "type": "string"
+        },
+        "signed_at": {
+          "format": "date-time",
+          "title": "Signed At",
+          "type": "string"
+        },
+        "signer_name": {
+          "title": "Signer Name",
+          "type": "string"
+        },
+        "signer_subject": {
+          "title": "Signer Subject",
+          "type": "string"
+        },
+        "value": {
+          "default": "",
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "signature_id",
+        "record_type",
+        "record_id",
+        "record_digest",
+        "signer_subject",
+        "signer_name",
+        "meaning",
+        "reason",
+        "signed_at",
+        "auth_time",
+        "auth_methods",
+        "challenge_id",
+        "key_id"
+      ],
+      "title": "ElectronicSignature",
+      "type": "object"
+    },
+    "Level": {
+      "description": "Three-point scale used by GAMP 5 quality risk management.",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "Level",
+      "type": "string"
+    },
+    "PolicyOutcome": {
+      "properties": {
+        "decision": {
+          "title": "Decision",
+          "type": "string"
+        },
+        "fabric_decision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fabric Decision"
+        },
+        "matched_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Matched Rules",
+          "type": "array"
+        },
+        "policy_digest": {
+          "title": "Policy Digest",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "matched_rules",
+        "policy_version",
+        "policy_digest",
+        "reason"
+      ],
+      "title": "PolicyOutcome",
+      "type": "object"
+    },
+    "RecordType": {
+      "enum": [
+        "action-request",
+        "action-definition",
+        "periodic-review"
+      ],
+      "title": "RecordType",
+      "type": "string"
+    },
+    "RiskAssessment": {
+      "description": "GAMP 5 functional risk assessment of one action request.",
+      "properties": {
+        "detectability": {
+          "$ref": "#/$defs/Level"
+        },
+        "priority": {
+          "$ref": "#/$defs/Level"
+        },
+        "probability": {
+          "$ref": "#/$defs/Level"
+        },
+        "rationale": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rationale",
+          "type": "array"
+        },
+        "required_signatures": {
+          "items": {
+            "$ref": "#/$defs/SignatureRequirement"
+          },
+          "title": "Required Signatures",
+          "type": "array"
+        },
+        "risk_class": {
+          "description": "1 is the highest risk class",
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Risk Class",
+          "type": "integer"
+        },
+        "severity": {
+          "$ref": "#/$defs/Level"
+        }
+      },
+      "required": [
+        "severity",
+        "probability",
+        "risk_class",
+        "detectability",
+        "priority",
+        "rationale",
+        "required_signatures"
+      ],
+      "title": "RiskAssessment",
+      "type": "object"
+    },
+    "Role": {
+      "description": "Enterprise IdP roles of human users.",
+      "enum": [
+        "gxp-system-owner",
+        "gxp-approver",
+        "gxp-qa",
+        "gxp-auditor"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "SignatureMeaning": {
+      "description": "Meaning of an electronic signature (21 CFR 11.50(a)(3)).",
+      "enum": [
+        "approval",
+        "quality-approval",
+        "rejection",
+        "validation-approval",
+        "retirement",
+        "review"
+      ],
+      "title": "SignatureMeaning",
+      "type": "string"
+    },
+    "SignatureRequirement": {
+      "properties": {
+        "meaning": {
+          "$ref": "#/$defs/SignatureMeaning"
+        },
+        "role": {
+          "$ref": "#/$defs/Role"
+        }
+      },
+      "required": [
+        "meaning",
+        "role"
+      ],
+      "title": "SignatureRequirement",
+      "type": "object"
+    }
+  },
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/execution-record.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Immutable evidence of one execution against a validated system.",
+  "properties": {
+    "action_key": {
+      "title": "Action Key",
+      "type": "string"
+    },
+    "agent_id": {
+      "title": "Agent Id",
+      "type": "string"
+    },
+    "alcoa": {
+      "$ref": "#/$defs/AlcoaAssessment"
+    },
+    "completed_at": {
+      "format": "date-time",
+      "title": "Completed At",
+      "type": "string"
+    },
+    "definition_digest": {
+      "title": "Definition Digest",
+      "type": "string"
+    },
+    "delegation_chain": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Delegation Chain",
+      "type": "array"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Error"
+    },
+    "http_status": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Http Status"
+    },
+    "inputs_digest": {
+      "title": "Inputs Digest",
+      "type": "string"
+    },
+    "key_id": {
+      "default": "",
+      "title": "Key Id",
+      "type": "string"
+    },
+    "outputs": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Outputs"
+    },
+    "outputs_digest": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Outputs Digest"
+    },
+    "policy": {
+      "$ref": "#/$defs/PolicyOutcome"
+    },
+    "received_at": {
+      "format": "date-time",
+      "title": "Received At",
+      "type": "string"
+    },
+    "record_digest": {
+      "default": "",
+      "title": "Record Digest",
+      "type": "string"
+    },
+    "record_id": {
+      "title": "Record Id",
+      "type": "string"
+    },
+    "recorded_at": {
+      "format": "date-time",
+      "title": "Recorded At",
+      "type": "string"
+    },
+    "request_digest": {
+      "title": "Request Digest",
+      "type": "string"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "response_digest": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Response Digest"
+    },
+    "risk": {
+      "$ref": "#/$defs/RiskAssessment"
+    },
+    "signature": {
+      "default": "",
+      "title": "Signature",
+      "type": "string"
+    },
+    "signatures": {
+      "items": {
+        "$ref": "#/$defs/ElectronicSignature"
+      },
+      "title": "Signatures",
+      "type": "array"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "system_id": {
+      "title": "System Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "record_id",
+    "request_id",
+    "action_key",
+    "definition_digest",
+    "system_id",
+    "agent_id",
+    "delegation_chain",
+    "request_digest",
+    "inputs_digest",
+    "outputs",
+    "outputs_digest",
+    "response_digest",
+    "http_status",
+    "status",
+    "error",
+    "received_at",
+    "started_at",
+    "completed_at",
+    "recorded_at",
+    "risk",
+    "policy",
+    "signatures",
+    "alcoa"
+  ],
+  "title": "ExecutionRecord",
+  "type": "object"
+}

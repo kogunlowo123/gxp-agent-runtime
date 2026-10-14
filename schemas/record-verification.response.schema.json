@@ -1,0 +1,153 @@
+{
+  "$defs": {
+    "AlcoaAssessment": {
+      "properties": {
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/AlcoaCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "checks"
+      ],
+      "title": "AlcoaAssessment",
+      "type": "object"
+    },
+    "AlcoaCheck": {
+      "properties": {
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "principle": {
+          "$ref": "#/$defs/AlcoaPrinciple"
+        }
+      },
+      "required": [
+        "principle",
+        "passed",
+        "detail"
+      ],
+      "title": "AlcoaCheck",
+      "type": "object"
+    },
+    "AlcoaPrinciple": {
+      "enum": [
+        "attributable",
+        "legible",
+        "contemporaneous",
+        "original",
+        "accurate",
+        "complete",
+        "consistent",
+        "enduring",
+        "available"
+      ],
+      "title": "AlcoaPrinciple",
+      "type": "string"
+    },
+    "SignatureCheck": {
+      "properties": {
+        "cryptographically_valid": {
+          "title": "Cryptographically Valid",
+          "type": "boolean"
+        },
+        "linked_to_record": {
+          "title": "Linked To Record",
+          "type": "boolean"
+        },
+        "meaning": {
+          "$ref": "#/$defs/SignatureMeaning"
+        },
+        "signature_id": {
+          "title": "Signature Id",
+          "type": "string"
+        },
+        "signed_at": {
+          "format": "date-time",
+          "title": "Signed At",
+          "type": "string"
+        },
+        "signer": {
+          "title": "Signer",
+          "type": "string"
+        }
+      },
+      "required": [
+        "signature_id",
+        "meaning",
+        "signer",
+        "signed_at",
+        "cryptographically_valid",
+        "linked_to_record"
+      ],
+      "title": "SignatureCheck",
+      "type": "object"
+    },
+    "SignatureMeaning": {
+      "description": "Meaning of an electronic signature (21 CFR 11.50(a)(3)).",
+      "enum": [
+        "approval",
+        "quality-approval",
+        "rejection",
+        "validation-approval",
+        "retirement",
+        "review"
+      ],
+      "title": "SignatureMeaning",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/record-verification.response.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "alcoa": {
+      "$ref": "#/$defs/AlcoaAssessment"
+    },
+    "audit_events": {
+      "title": "Audit Events",
+      "type": "integer"
+    },
+    "record_digest_valid": {
+      "title": "Record Digest Valid",
+      "type": "boolean"
+    },
+    "record_id": {
+      "title": "Record Id",
+      "type": "string"
+    },
+    "record_signature_valid": {
+      "title": "Record Signature Valid",
+      "type": "boolean"
+    },
+    "signatures": {
+      "items": {
+        "$ref": "#/$defs/SignatureCheck"
+      },
+      "title": "Signatures",
+      "type": "array"
+    },
+    "verified": {
+      "title": "Verified",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "record_id",
+    "record_digest_valid",
+    "record_signature_valid",
+    "signatures",
+    "alcoa",
+    "audit_events",
+    "verified"
+  ],
+  "title": "RecordVerification",
+  "type": "object"
+}

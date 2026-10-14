@@ -1,0 +1,113 @@
+replicaCount: 3
+
+image:
+  repository: ghcr.io/kogunlowo123/gxp-agent-runtime
+  tag: ""  # defaults to .Chart.AppVersion
+  digest: ""  # set to pin an immutable sha256 digest; takes precedence over tag
+  pullPolicy: IfNotPresent
+
+serviceAccount:
+  create: true
+  name: gxp-agent-runtime
+  # Cloud workload identity bindings, e.g.
+  #   eks.amazonaws.com/role-arn (AWS IRSA)
+  #   azure.workload.identity/client-id (Azure Workload ID)
+  #   iam.gke.io/gcp-service-account (GKE Workload Identity)
+  annotations: {}
+
+podLabels: {}
+
+# Deployment-specific values marked REQUIRED have no default; the chart
+# refuses to render until they are set (helm install --values <env>.yaml).
+gxp:
+  environment: production
+  publicUrl: ""  # REQUIRED: public HTTPS URL of the runtime (agent card, MCP Host check)
+  mcpAllowedHosts: []  # extra Host headers accepted on /mcp, e.g. in-cluster service names
+  signer:
+    issuer: ""  # REQUIRED: enterprise OIDC issuer for users and signers
+    audience: ""  # REQUIRED: client id of the runtime in the enterprise IdP
+    jwksUrl: ""  # REQUIRED: JWKS URL of the enterprise IdP
+    rolesClaim: roles
+    nameClaim: name
+  # Agent credentials: set fabricUrl (introspection + decision point), or
+  # agentIssuer and agentJwksUrl for offline verification. One is REQUIRED.
+  fabricUrl: ""
+  agentIssuer: ""
+  agentAudience: agent-platform
+  agentJwksUrl: ""
+  # SPIFFE ID of this runtime in the identity fabric. When set (with
+  # fabricUrl), a projected service-account token is exchanged for the
+  # credential presented to validated systems.
+  runtimeClientId: ""
+  workloadTokenAudience: identity-fabric
+  approvalTtlHours: 72
+  reauthMaxAgeSeconds: 300
+  challengeTtlSeconds: 300
+  maxClockSkewSeconds: 120
+  connectorTimeoutSeconds: 30
+  logLevel: INFO
+  otlpEndpoint: ""  # optional OTLP gRPC endpoint
+
+# Secrets are created by the platform secret operator (External Secrets,
+# Secrets Store CSI) from the cloud secret manager provisioned by Terraform.
+secrets:
+  # Secret holding key DATABASE_URL (postgresql+asyncpg://...).
+  database: gxp-agent-runtime-database
+  # Secret holding the Ed25519 key that signs e-signature manifests and records.
+  signingKey: gxp-agent-runtime-signing-key
+  signingKeyFile: ""  # REQUIRED: file name within secrets.signingKey, e.g. records-<kid>.pem
+  # Secret holding the Ed25519 audit-chain key.
+  auditKey: gxp-agent-runtime-audit-key
+  auditKeyFile: ""  # REQUIRED: file name within secrets.auditKey, e.g. audit-<kid>.pem
+  # Optional secret holding retired Ed25519 public keys (<kid>.pem) so records
+  # and audit chains signed before a key rotation stay verifiable.
+  trustedPublicKeys: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  host: ""  # required when ingress.enabled
+  tlsSecret: gxp-agent-runtime-tls
+  annotations: {}
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 384Mi
+  limits:
+    cpu: "1"
+    memory: 768Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+podDisruptionBudget:
+  minAvailable: 2
+
+networkPolicy:
+  enabled: true
+  # Namespaces whose pods (agents, approval UI) may call the runtime.
+  allowedNamespaceLabels:
+    agent-platform/member: "true"
+  monitoringNamespaceLabels:
+    kubernetes.io/metadata.name: observability
+  ingressNamespaceLabels:
+    kubernetes.io/metadata.name: ingress-nginx
+
+serviceMonitor:
+  enabled: false
+  interval: 30s
+
+nodeSelector: {}
+tolerations: []
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: ScheduleAnyway

@@ -1,0 +1,45 @@
+{{- $g := .Values.gxp -}}
+{{- if and (not $g.fabricUrl) (or (not $g.agentIssuer) (not $g.agentJwksUrl)) }}{{ fail "set gxp.fabricUrl, or gxp.agentIssuer and gxp.agentJwksUrl" }}{{ end -}}
+{{- if and $g.runtimeClientId (not $g.fabricUrl) }}{{ fail "gxp.runtimeClientId requires gxp.fabricUrl" }}{{ end -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gxp.fullname" . }}
+  labels: {{- include "gxp.labels" . | nindent 4 }}
+data:
+  GXP_ENVIRONMENT: {{ $g.environment | quote }}
+  GXP_PUBLIC_URL: {{ required "gxp.publicUrl is required" $g.publicUrl | quote }}
+  GXP_MCP_ALLOWED_HOSTS: {{ $g.mcpAllowedHosts | toJson | quote }}
+  GXP_SIGNER_ISSUER: {{ required "gxp.signer.issuer is required" $g.signer.issuer | quote }}
+  GXP_SIGNER_AUDIENCE: {{ required "gxp.signer.audience is required" $g.signer.audience | quote }}
+  GXP_SIGNER_JWKS_URL: {{ required "gxp.signer.jwksUrl is required" $g.signer.jwksUrl | quote }}
+  GXP_SIGNER_ROLES_CLAIM: {{ $g.signer.rolesClaim | quote }}
+  GXP_SIGNER_NAME_CLAIM: {{ $g.signer.nameClaim | quote }}
+  {{- with $g.fabricUrl }}
+  GXP_FABRIC_URL: {{ . | quote }}
+  {{- end }}
+  {{- with $g.agentIssuer }}
+  GXP_AGENT_ISSUER: {{ . | quote }}
+  {{- end }}
+  {{- with $g.agentJwksUrl }}
+  GXP_AGENT_JWKS_URL: {{ . | quote }}
+  {{- end }}
+  GXP_AGENT_AUDIENCE: {{ $g.agentAudience | quote }}
+  {{- with $g.runtimeClientId }}
+  GXP_RUNTIME_CLIENT_ID: {{ . | quote }}
+  GXP_WORKLOAD_TOKEN_FILE: /var/run/secrets/tokens/identity-fabric/token
+  {{- end }}
+  GXP_SIGNING_KEY_FILE: {{ printf "/etc/gxp-agent-runtime/signing-key/%s" (required "secrets.signingKeyFile is required" .Values.secrets.signingKeyFile) | quote }}
+  GXP_AUDIT_KEY_FILE: {{ printf "/etc/gxp-agent-runtime/audit-key/%s" (required "secrets.auditKeyFile is required" .Values.secrets.auditKeyFile) | quote }}
+  {{- if .Values.secrets.trustedPublicKeys }}
+  GXP_TRUSTED_PUBLIC_KEYS_DIR: /etc/gxp-agent-runtime/trusted-keys
+  {{- end }}
+  GXP_APPROVAL_TTL_HOURS: {{ $g.approvalTtlHours | quote }}
+  GXP_REAUTH_MAX_AGE_SECONDS: {{ $g.reauthMaxAgeSeconds | quote }}
+  GXP_CHALLENGE_TTL_SECONDS: {{ $g.challengeTtlSeconds | quote }}
+  GXP_MAX_CLOCK_SKEW_SECONDS: {{ $g.maxClockSkewSeconds | quote }}
+  GXP_CONNECTOR_TIMEOUT_SECONDS: {{ $g.connectorTimeoutSeconds | quote }}
+  GXP_LOG_LEVEL: {{ $g.logLevel | quote }}
+  {{- with $g.otlpEndpoint }}
+  GXP_OTLP_ENDPOINT: {{ . | quote }}
+  {{- end }}

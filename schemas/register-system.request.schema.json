@@ -1,0 +1,84 @@
+{
+  "$defs": {
+    "GampCategory": {
+      "description": "GAMP 5 (2nd edition) software categories. Category 2 was retired.",
+      "enum": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "title": "GampCategory",
+      "type": "integer"
+    }
+  },
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/register-system.request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "base_url": {
+      "maxLength": 300,
+      "minLength": 10,
+      "title": "Base Url",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 2000,
+      "minLength": 10,
+      "title": "Description",
+      "type": "string"
+    },
+    "gamp_category": {
+      "$ref": "#/$defs/GampCategory"
+    },
+    "last_reviewed_at": {
+      "description": "Date of the validation summary report or last periodic review",
+      "format": "date-time",
+      "title": "Last Reviewed At",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 120,
+      "minLength": 3,
+      "title": "Name",
+      "type": "string"
+    },
+    "owner": {
+      "maxLength": 200,
+      "minLength": 2,
+      "title": "Owner",
+      "type": "string"
+    },
+    "review_interval_days": {
+      "maximum": 1095,
+      "minimum": 30,
+      "title": "Review Interval Days",
+      "type": "integer"
+    },
+    "system_id": {
+      "maxLength": 64,
+      "minLength": 2,
+      "title": "System Id",
+      "type": "string"
+    },
+    "validation_reference": {
+      "maxLength": 120,
+      "minLength": 3,
+      "title": "Validation Reference",
+      "type": "string"
+    }
+  },
+  "required": [
+    "system_id",
+    "name",
+    "description",
+    "base_url",
+    "gamp_category",
+    "validation_reference",
+    "owner",
+    "review_interval_days",
+    "last_reviewed_at"
+  ],
+  "title": "RegisterSystem",
+  "type": "object"
+}

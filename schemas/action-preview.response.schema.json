@@ -1,0 +1,243 @@
+{
+  "$defs": {
+    "AlcoaAssessment": {
+      "properties": {
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/AlcoaCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "checks"
+      ],
+      "title": "AlcoaAssessment",
+      "type": "object"
+    },
+    "AlcoaCheck": {
+      "properties": {
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "principle": {
+          "$ref": "#/$defs/AlcoaPrinciple"
+        }
+      },
+      "required": [
+        "principle",
+        "passed",
+        "detail"
+      ],
+      "title": "AlcoaCheck",
+      "type": "object"
+    },
+    "AlcoaPrinciple": {
+      "enum": [
+        "attributable",
+        "legible",
+        "contemporaneous",
+        "original",
+        "accurate",
+        "complete",
+        "consistent",
+        "enduring",
+        "available"
+      ],
+      "title": "AlcoaPrinciple",
+      "type": "string"
+    },
+    "Level": {
+      "description": "Three-point scale used by GAMP 5 quality risk management.",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "Level",
+      "type": "string"
+    },
+    "PolicyOutcome": {
+      "properties": {
+        "decision": {
+          "title": "Decision",
+          "type": "string"
+        },
+        "fabric_decision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fabric Decision"
+        },
+        "matched_rules": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Matched Rules",
+          "type": "array"
+        },
+        "policy_digest": {
+          "title": "Policy Digest",
+          "type": "string"
+        },
+        "policy_version": {
+          "title": "Policy Version",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision",
+        "matched_rules",
+        "policy_version",
+        "policy_digest",
+        "reason"
+      ],
+      "title": "PolicyOutcome",
+      "type": "object"
+    },
+    "RiskAssessment": {
+      "description": "GAMP 5 functional risk assessment of one action request.",
+      "properties": {
+        "detectability": {
+          "$ref": "#/$defs/Level"
+        },
+        "priority": {
+          "$ref": "#/$defs/Level"
+        },
+        "probability": {
+          "$ref": "#/$defs/Level"
+        },
+        "rationale": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Rationale",
+          "type": "array"
+        },
+        "required_signatures": {
+          "items": {
+            "$ref": "#/$defs/SignatureRequirement"
+          },
+          "title": "Required Signatures",
+          "type": "array"
+        },
+        "risk_class": {
+          "description": "1 is the highest risk class",
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Risk Class",
+          "type": "integer"
+        },
+        "severity": {
+          "$ref": "#/$defs/Level"
+        }
+      },
+      "required": [
+        "severity",
+        "probability",
+        "risk_class",
+        "detectability",
+        "priority",
+        "rationale",
+        "required_signatures"
+      ],
+      "title": "RiskAssessment",
+      "type": "object"
+    },
+    "Role": {
+      "description": "Enterprise IdP roles of human users.",
+      "enum": [
+        "gxp-system-owner",
+        "gxp-approver",
+        "gxp-qa",
+        "gxp-auditor"
+      ],
+      "title": "Role",
+      "type": "string"
+    },
+    "SignatureMeaning": {
+      "description": "Meaning of an electronic signature (21 CFR 11.50(a)(3)).",
+      "enum": [
+        "approval",
+        "quality-approval",
+        "rejection",
+        "validation-approval",
+        "retirement",
+        "review"
+      ],
+      "title": "SignatureMeaning",
+      "type": "string"
+    },
+    "SignatureRequirement": {
+      "properties": {
+        "meaning": {
+          "$ref": "#/$defs/SignatureMeaning"
+        },
+        "role": {
+          "$ref": "#/$defs/Role"
+        }
+      },
+      "required": [
+        "meaning",
+        "role"
+      ],
+      "title": "SignatureRequirement",
+      "type": "object"
+    }
+  },
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/action-preview.response.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Risk classification and policy outcome without submitting the action.",
+  "properties": {
+    "action_key": {
+      "title": "Action Key",
+      "type": "string"
+    },
+    "alcoa": {
+      "$ref": "#/$defs/AlcoaAssessment"
+    },
+    "policy": {
+      "$ref": "#/$defs/PolicyOutcome"
+    },
+    "required_signatures": {
+      "items": {
+        "$ref": "#/$defs/SignatureRequirement"
+      },
+      "title": "Required Signatures",
+      "type": "array"
+    },
+    "risk": {
+      "$ref": "#/$defs/RiskAssessment"
+    },
+    "would_execute_immediately": {
+      "title": "Would Execute Immediately",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "action_key",
+    "risk",
+    "policy",
+    "alcoa",
+    "required_signatures",
+    "would_execute_immediately"
+  ],
+  "title": "ActionPreview",
+  "type": "object"
+}

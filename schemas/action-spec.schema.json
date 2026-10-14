@@ -1,0 +1,171 @@
+{
+  "$defs": {
+    "GampCategory": {
+      "description": "GAMP 5 (2nd edition) software categories. Category 2 was retired.",
+      "enum": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "title": "GampCategory",
+      "type": "integer"
+    },
+    "GxpImpact": {
+      "additionalProperties": false,
+      "description": "Impact of a failed or wrong execution on the three GxP concerns.",
+      "properties": {
+        "data_integrity": {
+          "$ref": "#/$defs/Level"
+        },
+        "patient_safety": {
+          "$ref": "#/$defs/Level"
+        },
+        "product_quality": {
+          "$ref": "#/$defs/Level"
+        }
+      },
+      "required": [
+        "patient_safety",
+        "product_quality",
+        "data_integrity"
+      ],
+      "title": "GxpImpact",
+      "type": "object"
+    },
+    "HttpBinding": {
+      "additionalProperties": false,
+      "description": "How the runtime invokes the action on the validated system.",
+      "properties": {
+        "method": {
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 300,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "success_statuses": {
+          "default": [
+            200,
+            201,
+            202
+          ],
+          "items": {
+            "type": "integer"
+          },
+          "title": "Success Statuses",
+          "type": "array"
+        }
+      },
+      "required": [
+        "method",
+        "path"
+      ],
+      "title": "HttpBinding",
+      "type": "object"
+    },
+    "Level": {
+      "description": "Three-point scale used by GAMP 5 quality risk management.",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "title": "Level",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/action-spec.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "The immutable, versioned part of an action definition.",
+  "properties": {
+    "action_id": {
+      "title": "Action Id",
+      "type": "string"
+    },
+    "binding": {
+      "$ref": "#/$defs/HttpBinding"
+    },
+    "creates_gxp_record": {
+      "title": "Creates Gxp Record",
+      "type": "boolean"
+    },
+    "description": {
+      "maxLength": 4000,
+      "minLength": 20,
+      "title": "Description",
+      "type": "string"
+    },
+    "detectability": {
+      "$ref": "#/$defs/Level",
+      "description": "Likelihood that an erroneous execution is detected before harm"
+    },
+    "gamp_category": {
+      "$ref": "#/$defs/GampCategory"
+    },
+    "impact": {
+      "$ref": "#/$defs/GxpImpact"
+    },
+    "input_schema": {
+      "additionalProperties": true,
+      "title": "Input Schema",
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "title": "Output Schema",
+      "type": "object"
+    },
+    "requires_source_record": {
+      "default": false,
+      "description": "Requests must cite the original source record and digest",
+      "title": "Requires Source Record",
+      "type": "boolean"
+    },
+    "reversible": {
+      "title": "Reversible",
+      "type": "boolean"
+    },
+    "system_id": {
+      "title": "System Id",
+      "type": "string"
+    },
+    "title": {
+      "maxLength": 160,
+      "minLength": 5,
+      "title": "Title",
+      "type": "string"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "action_id",
+    "version",
+    "system_id",
+    "title",
+    "description",
+    "gamp_category",
+    "impact",
+    "detectability",
+    "reversible",
+    "creates_gxp_record",
+    "input_schema",
+    "output_schema",
+    "binding"
+  ],
+  "title": "ActionSpec",
+  "type": "object"
+}

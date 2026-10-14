@@ -1,0 +1,80 @@
+{
+  "$defs": {
+    "RecordType": {
+      "enum": [
+        "action-request",
+        "action-definition",
+        "periodic-review"
+      ],
+      "title": "RecordType",
+      "type": "string"
+    },
+    "SignatureMeaning": {
+      "description": "Meaning of an electronic signature (21 CFR 11.50(a)(3)).",
+      "enum": [
+        "approval",
+        "quality-approval",
+        "rejection",
+        "validation-approval",
+        "retirement",
+        "review"
+      ],
+      "title": "SignatureMeaning",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/signature-challenge.response.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "challenge_id": {
+      "title": "Challenge Id",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "meaning": {
+      "$ref": "#/$defs/SignatureMeaning"
+    },
+    "nonce": {
+      "description": "Pass as the OIDC nonce when re-authenticating to sign",
+      "title": "Nonce",
+      "type": "string"
+    },
+    "record_digest": {
+      "title": "Record Digest",
+      "type": "string"
+    },
+    "record_id": {
+      "title": "Record Id",
+      "type": "string"
+    },
+    "record_type": {
+      "$ref": "#/$defs/RecordType"
+    },
+    "signer": {
+      "title": "Signer",
+      "type": "string"
+    },
+    "statement": {
+      "description": "What the signer attests to; shown before signing",
+      "title": "Statement",
+      "type": "string"
+    }
+  },
+  "required": [
+    "challenge_id",
+    "nonce",
+    "record_type",
+    "record_id",
+    "record_digest",
+    "meaning",
+    "signer",
+    "expires_at",
+    "statement"
+  ],
+  "title": "ChallengeView",
+  "type": "object"
+}

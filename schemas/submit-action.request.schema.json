@@ -1,0 +1,93 @@
+{
+  "$defs": {
+    "SourceRecord": {
+      "additionalProperties": false,
+      "description": "Pointer to the original record an action is based on (ALCOA+ original).",
+      "properties": {
+        "digest": {
+          "title": "Digest",
+          "type": "string"
+        },
+        "uri": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "uri",
+        "digest"
+      ],
+      "title": "SourceRecord",
+      "type": "object"
+    }
+  },
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/submit-action.request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "action_id": {
+      "maxLength": 120,
+      "minLength": 3,
+      "title": "Action Id",
+      "type": "string"
+    },
+    "context": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "maxProperties": 20,
+      "title": "Context",
+      "type": "object"
+    },
+    "inputs": {
+      "additionalProperties": true,
+      "title": "Inputs",
+      "type": "object"
+    },
+    "justification": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Justification",
+      "type": "string"
+    },
+    "performed_at": {
+      "description": "When the agent performed the activity (UTC)",
+      "format": "date-time",
+      "title": "Performed At",
+      "type": "string"
+    },
+    "source_records": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SourceRecord"
+      },
+      "maxItems": 20,
+      "title": "Source Records",
+      "type": "array"
+    },
+    "version": {
+      "anyOf": [
+        {
+          "maxLength": 32,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Omit to use the latest validated version",
+      "title": "Version"
+    }
+  },
+  "required": [
+    "action_id",
+    "inputs",
+    "justification",
+    "performed_at"
+  ],
+  "title": "SubmitAction",
+  "type": "object"
+}

@@ -1,0 +1,21 @@
+# Values used by CI to render and schema-validate the chart (helm lint,
+# helm template | kubeconform). They describe a complete, valid deployment.
+gxp:
+  publicUrl: https://gxp.agents.ci.internal
+  mcpAllowedHosts: ["gxp-gxp-agent-runtime.gxp-runtime.svc"]
+  signer:
+    issuer: https://login.ci.internal
+    audience: gxp-agent-runtime
+    jwksUrl: https://login.ci.internal/jwks
+  fabricUrl: https://identity.agents.ci.internal
+  runtimeClientId: spiffe://agents.ci.internal/agent/platform/gxp-agent-runtime
+secrets:
+  signingKeyFile: records-2026-10.pem
+  auditKeyFile: audit-2026-10.pem
+  trustedPublicKeys: gxp-agent-runtime-retired-keys
+ingress:
+  enabled: true
+  className: nginx
+  host: gxp.agents.ci.internal
+serviceMonitor:
+  enabled: true

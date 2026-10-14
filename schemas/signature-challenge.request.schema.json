@@ -1,0 +1,50 @@
+{
+  "$defs": {
+    "RecordType": {
+      "enum": [
+        "action-request",
+        "action-definition",
+        "periodic-review"
+      ],
+      "title": "RecordType",
+      "type": "string"
+    },
+    "SignatureMeaning": {
+      "description": "Meaning of an electronic signature (21 CFR 11.50(a)(3)).",
+      "enum": [
+        "approval",
+        "quality-approval",
+        "rejection",
+        "validation-approval",
+        "retirement",
+        "review"
+      ],
+      "title": "SignatureMeaning",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/signature-challenge.request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "meaning": {
+      "$ref": "#/$defs/SignatureMeaning"
+    },
+    "record_id": {
+      "maxLength": 160,
+      "minLength": 1,
+      "title": "Record Id",
+      "type": "string"
+    },
+    "record_type": {
+      "$ref": "#/$defs/RecordType"
+    }
+  },
+  "required": [
+    "record_type",
+    "record_id",
+    "meaning"
+  ],
+  "title": "CreateChallenge",
+  "type": "object"
+}

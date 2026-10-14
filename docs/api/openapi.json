@@ -1,0 +1,3120 @@
+{
+  "components": {
+    "schemas": {
+      "ActionCatalog": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ActionCatalogEntry"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "ActionCatalog",
+        "type": "object"
+      },
+      "ActionCatalogEntry": {
+        "properties": {
+          "action_id": {
+            "title": "Action Id",
+            "type": "string"
+          },
+          "creates_gxp_record": {
+            "title": "Creates Gxp Record",
+            "type": "boolean"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "digest": {
+            "title": "Digest",
+            "type": "string"
+          },
+          "input_schema": {
+            "additionalProperties": true,
+            "title": "Input Schema",
+            "type": "object"
+          },
+          "output_schema": {
+            "additionalProperties": true,
+            "title": "Output Schema",
+            "type": "object"
+          },
+          "requires_source_record": {
+            "title": "Requires Source Record",
+            "type": "boolean"
+          },
+          "reversible": {
+            "title": "Reversible",
+            "type": "boolean"
+          },
+          "system_id": {
+            "title": "System Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action_id",
+          "version",
+          "system_id",
+          "title",
+          "description",
+          "digest",
+          "reversible",
+          "creates_gxp_record",
+          "requires_source_record",
+          "input_schema",
+          "output_schema"
+        ],
+        "title": "ActionCatalogEntry",
+        "type": "object"
+      },
+      "ActionDefinition": {
+        "description": "A registered action spec plus its validation lifecycle.",
+        "properties": {
+          "author": {
+            "title": "Author",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "digest": {
+            "title": "Digest",
+            "type": "string"
+          },
+          "retired_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retired At"
+          },
+          "retirement_signature_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retirement Signature Id"
+          },
+          "spec": {
+            "$ref": "#/components/schemas/ActionSpec"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ValidationStatus",
+            "default": "draft"
+          },
+          "validated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validated At"
+          },
+          "validation_reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validation Reference"
+          },
+          "validation_signature_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validation Signature Id"
+          }
+        },
+        "required": [
+          "spec",
+          "digest",
+          "author",
+          "created_at"
+        ],
+        "title": "ActionDefinition",
+        "type": "object"
+      },
+      "ActionPreview": {
+        "description": "Risk classification and policy outcome without submitting the action.",
+        "properties": {
+          "action_key": {
+            "title": "Action Key",
+            "type": "string"
+          },
+          "alcoa": {
+            "$ref": "#/components/schemas/AlcoaAssessment"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/PolicyOutcome"
+          },
+          "required_signatures": {
+            "items": {
+              "$ref": "#/components/schemas/SignatureRequirement"
+            },
+            "title": "Required Signatures",
+            "type": "array"
+          },
+          "risk": {
+            "$ref": "#/components/schemas/RiskAssessment"
+          },
+          "would_execute_immediately": {
+            "title": "Would Execute Immediately",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "action_key",
+          "risk",
+          "policy",
+          "alcoa",
+          "required_signatures",
+          "would_execute_immediately"
+        ],
+        "title": "ActionPreview",
+        "type": "object"
+      },
+      "ActionSpec": {
+        "additionalProperties": false,
+        "description": "The immutable, versioned part of an action definition.",
+        "properties": {
+          "action_id": {
+            "title": "Action Id",
+            "type": "string"
+          },
+          "binding": {
+            "$ref": "#/components/schemas/HttpBinding"
+          },
+          "creates_gxp_record": {
+            "title": "Creates Gxp Record",
+            "type": "boolean"
+          },
+          "description": {
+            "maxLength": 4000,
+            "minLength": 20,
+            "title": "Description",
+            "type": "string"
+          },
+          "detectability": {
+            "$ref": "#/components/schemas/Level",
+            "description": "Likelihood that an erroneous execution is detected before harm"
+          },
+          "gamp_category": {
+            "$ref": "#/components/schemas/GampCategory"
+          },
+          "impact": {
+            "$ref": "#/components/schemas/GxpImpact"
+          },
+          "input_schema": {
+            "additionalProperties": true,
+            "title": "Input Schema",
+            "type": "object"
+          },
+          "output_schema": {
+            "additionalProperties": true,
+            "title": "Output Schema",
+            "type": "object"
+          },
+          "requires_source_record": {
+            "default": false,
+            "description": "Requests must cite the original source record and digest",
+            "title": "Requires Source Record",
+            "type": "boolean"
+          },
+          "reversible": {
+            "title": "Reversible",
+            "type": "boolean"
+          },
+          "system_id": {
+            "title": "System Id",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 160,
+            "minLength": 5,
+            "title": "Title",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action_id",
+          "version",
+          "system_id",
+          "title",
+          "description",
+          "gamp_category",
+          "impact",
+          "detectability",
+          "reversible",
+          "creates_gxp_record",
+          "input_schema",
+          "output_schema",
+          "binding"
+        ],
+        "title": "ActionSpec",
+        "type": "object"
+      },
+      "AlcoaAssessment": {
+        "properties": {
+          "checks": {
+            "items": {
+              "$ref": "#/components/schemas/AlcoaCheck"
+            },
+            "title": "Checks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "checks"
+        ],
+        "title": "AlcoaAssessment",
+        "type": "object"
+      },
+      "AlcoaCheck": {
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "passed": {
+            "title": "Passed",
+            "type": "boolean"
+          },
+          "principle": {
+            "$ref": "#/components/schemas/AlcoaPrinciple"
+          }
+        },
+        "required": [
+          "principle",
+          "passed",
+          "detail"
+        ],
+        "title": "AlcoaCheck",
+        "type": "object"
+      },
+      "AlcoaPrinciple": {
+        "enum": [
+          "attributable",
+          "legible",
+          "contemporaneous",
+          "original",
+          "accurate",
+          "complete",
+          "consistent",
+          "enduring",
+          "available"
+        ],
+        "title": "AlcoaPrinciple",
+        "type": "string"
+      },
+      "ApplySignature": {
+        "additionalProperties": false,
+        "properties": {
+          "challenge_id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Challenge Id",
+            "type": "string"
+          },
+          "reason": {
+            "maxLength": 1000,
+            "minLength": 5,
+            "title": "Reason",
+            "type": "string"
+          },
+          "reauthentication_token": {
+            "description": "ID token from re-authentication with nonce",
+            "maxLength": 8192,
+            "minLength": 20,
+            "title": "Reauthentication Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "challenge_id",
+          "reauthentication_token",
+          "reason"
+        ],
+        "title": "ApplySignature",
+        "type": "object"
+      },
+      "AuditVerification": {
+        "properties": {
+          "chains": {
+            "items": {
+              "$ref": "#/components/schemas/ChainReport"
+            },
+            "title": "Chains",
+            "type": "array"
+          },
+          "events_verified": {
+            "title": "Events Verified",
+            "type": "integer"
+          },
+          "intact": {
+            "title": "Intact",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "chains",
+          "events_verified",
+          "intact"
+        ],
+        "title": "AuditVerification",
+        "type": "object"
+      },
+      "ChainReport": {
+        "properties": {
+          "chain_id": {
+            "title": "Chain Id",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "events": {
+            "title": "Events",
+            "type": "integer"
+          },
+          "intact": {
+            "title": "Intact",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "chain_id",
+          "events",
+          "intact"
+        ],
+        "title": "ChainReport",
+        "type": "object"
+      },
+      "ChallengeView": {
+        "properties": {
+          "challenge_id": {
+            "title": "Challenge Id",
+            "type": "string"
+          },
+          "expires_at": {
+            "format": "date-time",
+            "title": "Expires At",
+            "type": "string"
+          },
+          "meaning": {
+            "$ref": "#/components/schemas/SignatureMeaning"
+          },
+          "nonce": {
+            "description": "Pass as the OIDC nonce when re-authenticating to sign",
+            "title": "Nonce",
+            "type": "string"
+          },
+          "record_digest": {
+            "title": "Record Digest",
+            "type": "string"
+          },
+          "record_id": {
+            "title": "Record Id",
+            "type": "string"
+          },
+          "record_type": {
+            "$ref": "#/components/schemas/RecordType"
+          },
+          "signer": {
+            "title": "Signer",
+            "type": "string"
+          },
+          "statement": {
+            "description": "What the signer attests to; shown before signing",
+            "title": "Statement",
+            "type": "string"
+          }
+        },
+        "required": [
+          "challenge_id",
+          "nonce",
+          "record_type",
+          "record_id",
+          "record_digest",
+          "meaning",
+          "signer",
+          "expires_at",
+          "statement"
+        ],
+        "title": "ChallengeView",
+        "type": "object"
+      },
+      "CreateChallenge": {
+        "additionalProperties": false,
+        "properties": {
+          "meaning": {
+            "$ref": "#/components/schemas/SignatureMeaning"
+          },
+          "record_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Record Id",
+            "type": "string"
+          },
+          "record_type": {
+            "$ref": "#/components/schemas/RecordType"
+          }
+        },
+        "required": [
+          "record_type",
+          "record_id",
+          "meaning"
+        ],
+        "title": "CreateChallenge",
+        "type": "object"
+      },
+      "DefinitionList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ActionDefinition"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "DefinitionList",
+        "type": "object"
+      },
+      "ElectronicSignature": {
+        "description": "A Part 11 electronic signature, cryptographically linked to its record.",
+        "properties": {
+          "auth_methods": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Auth Methods",
+            "type": "array"
+          },
+          "auth_time": {
+            "format": "date-time",
+            "title": "Auth Time",
+            "type": "string"
+          },
+          "challenge_id": {
+            "title": "Challenge Id",
+            "type": "string"
+          },
+          "key_id": {
+            "title": "Key Id",
+            "type": "string"
+          },
+          "meaning": {
+            "$ref": "#/components/schemas/SignatureMeaning"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "record_digest": {
+            "title": "Record Digest",
+            "type": "string"
+          },
+          "record_id": {
+            "title": "Record Id",
+            "type": "string"
+          },
+          "record_type": {
+            "$ref": "#/components/schemas/RecordType"
+          },
+          "signature_id": {
+            "title": "Signature Id",
+            "type": "string"
+          },
+          "signed_at": {
+            "format": "date-time",
+            "title": "Signed At",
+            "type": "string"
+          },
+          "signer_name": {
+            "title": "Signer Name",
+            "type": "string"
+          },
+          "signer_subject": {
+            "title": "Signer Subject",
+            "type": "string"
+          },
+          "value": {
+            "default": "",
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "signature_id",
+          "record_type",
+          "record_id",
+          "record_digest",
+          "signer_subject",
+          "signer_name",
+          "meaning",
+          "reason",
+          "signed_at",
+          "auth_time",
+          "auth_methods",
+          "challenge_id",
+          "key_id"
+        ],
+        "title": "ElectronicSignature",
+        "type": "object"
+      },
+      "ExecutionRecord": {
+        "description": "Immutable evidence of one execution against a validated system.",
+        "properties": {
+          "action_key": {
+            "title": "Action Key",
+            "type": "string"
+          },
+          "agent_id": {
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "alcoa": {
+            "$ref": "#/components/schemas/AlcoaAssessment"
+          },
+          "completed_at": {
+            "format": "date-time",
+            "title": "Completed At",
+            "type": "string"
+          },
+          "definition_digest": {
+            "title": "Definition Digest",
+            "type": "string"
+          },
+          "delegation_chain": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Delegation Chain",
+            "type": "array"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "http_status": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Http Status"
+          },
+          "inputs_digest": {
+            "title": "Inputs Digest",
+            "type": "string"
+          },
+          "key_id": {
+            "default": "",
+            "title": "Key Id",
+            "type": "string"
+          },
+          "outputs": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outputs"
+          },
+          "outputs_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Outputs Digest"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/PolicyOutcome"
+          },
+          "received_at": {
+            "format": "date-time",
+            "title": "Received At",
+            "type": "string"
+          },
+          "record_digest": {
+            "default": "",
+            "title": "Record Digest",
+            "type": "string"
+          },
+          "record_id": {
+            "title": "Record Id",
+            "type": "string"
+          },
+          "recorded_at": {
+            "format": "date-time",
+            "title": "Recorded At",
+            "type": "string"
+          },
+          "request_digest": {
+            "title": "Request Digest",
+            "type": "string"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "response_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Response Digest"
+          },
+          "risk": {
+            "$ref": "#/components/schemas/RiskAssessment"
+          },
+          "signature": {
+            "default": "",
+            "title": "Signature",
+            "type": "string"
+          },
+          "signatures": {
+            "items": {
+              "$ref": "#/components/schemas/ElectronicSignature"
+            },
+            "title": "Signatures",
+            "type": "array"
+          },
+          "started_at": {
+            "format": "date-time",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "system_id": {
+            "title": "System Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "record_id",
+          "request_id",
+          "action_key",
+          "definition_digest",
+          "system_id",
+          "agent_id",
+          "delegation_chain",
+          "request_digest",
+          "inputs_digest",
+          "outputs",
+          "outputs_digest",
+          "response_digest",
+          "http_status",
+          "status",
+          "error",
+          "received_at",
+          "started_at",
+          "completed_at",
+          "recorded_at",
+          "risk",
+          "policy",
+          "signatures",
+          "alcoa"
+        ],
+        "title": "ExecutionRecord",
+        "type": "object"
+      },
+      "GampCategory": {
+        "description": "GAMP 5 (2nd edition) software categories. Category 2 was retired.",
+        "enum": [
+          1,
+          3,
+          4,
+          5
+        ],
+        "title": "GampCategory",
+        "type": "integer"
+      },
+      "GenerateReview": {
+        "additionalProperties": false,
+        "properties": {
+          "period_end": {
+            "format": "date-time",
+            "title": "Period End",
+            "type": "string"
+          },
+          "period_start": {
+            "format": "date-time",
+            "title": "Period Start",
+            "type": "string"
+          },
+          "system_id": {
+            "maxLength": 64,
+            "minLength": 2,
+            "title": "System Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "system_id",
+          "period_start",
+          "period_end"
+        ],
+        "title": "GenerateReview",
+        "type": "object"
+      },
+      "GxpImpact": {
+        "additionalProperties": false,
+        "description": "Impact of a failed or wrong execution on the three GxP concerns.",
+        "properties": {
+          "data_integrity": {
+            "$ref": "#/components/schemas/Level"
+          },
+          "patient_safety": {
+            "$ref": "#/components/schemas/Level"
+          },
+          "product_quality": {
+            "$ref": "#/components/schemas/Level"
+          }
+        },
+        "required": [
+          "patient_safety",
+          "product_quality",
+          "data_integrity"
+        ],
+        "title": "GxpImpact",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HttpBinding": {
+        "additionalProperties": false,
+        "description": "How the runtime invokes the action on the validated system.",
+        "properties": {
+          "method": {
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "path": {
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Path",
+            "type": "string"
+          },
+          "success_statuses": {
+            "default": [
+              200,
+              201,
+              202
+            ],
+            "items": {
+              "type": "integer"
+            },
+            "title": "Success Statuses",
+            "type": "array"
+          }
+        },
+        "required": [
+          "method",
+          "path"
+        ],
+        "title": "HttpBinding",
+        "type": "object"
+      },
+      "Level": {
+        "description": "Three-point scale used by GAMP 5 quality risk management.",
+        "enum": [
+          "low",
+          "medium",
+          "high"
+        ],
+        "title": "Level",
+        "type": "string"
+      },
+      "PeriodicReview": {
+        "description": "Periodic evaluation that a validated system remains in a validated state.",
+        "properties": {
+          "approval_signature_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approval Signature Id"
+          },
+          "approved_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved At"
+          },
+          "conclusion": {
+            "enum": [
+              "remains-validated",
+              "remediation-required"
+            ],
+            "title": "Conclusion",
+            "type": "string"
+          },
+          "findings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Findings",
+            "type": "array"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "title": "Generated At",
+            "type": "string"
+          },
+          "generated_by": {
+            "title": "Generated By",
+            "type": "string"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/ReviewMetrics"
+          },
+          "period_end": {
+            "format": "date-time",
+            "title": "Period End",
+            "type": "string"
+          },
+          "period_start": {
+            "format": "date-time",
+            "title": "Period Start",
+            "type": "string"
+          },
+          "review_id": {
+            "title": "Review Id",
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ReviewStatus",
+            "default": "draft"
+          },
+          "system_id": {
+            "title": "System Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "review_id",
+          "system_id",
+          "period_start",
+          "period_end",
+          "generated_at",
+          "generated_by",
+          "metrics",
+          "findings",
+          "conclusion"
+        ],
+        "title": "PeriodicReview",
+        "type": "object"
+      },
+      "PolicyOutcome": {
+        "properties": {
+          "decision": {
+            "title": "Decision",
+            "type": "string"
+          },
+          "fabric_decision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fabric Decision"
+          },
+          "matched_rules": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Matched Rules",
+            "type": "array"
+          },
+          "policy_digest": {
+            "title": "Policy Digest",
+            "type": "string"
+          },
+          "policy_version": {
+            "title": "Policy Version",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "decision",
+          "matched_rules",
+          "policy_version",
+          "policy_digest",
+          "reason"
+        ],
+        "title": "PolicyOutcome",
+        "type": "object"
+      },
+      "RecordType": {
+        "enum": [
+          "action-request",
+          "action-definition",
+          "periodic-review"
+        ],
+        "title": "RecordType",
+        "type": "string"
+      },
+      "RecordVerification": {
+        "properties": {
+          "alcoa": {
+            "$ref": "#/components/schemas/AlcoaAssessment"
+          },
+          "audit_events": {
+            "title": "Audit Events",
+            "type": "integer"
+          },
+          "record_digest_valid": {
+            "title": "Record Digest Valid",
+            "type": "boolean"
+          },
+          "record_id": {
+            "title": "Record Id",
+            "type": "string"
+          },
+          "record_signature_valid": {
+            "title": "Record Signature Valid",
+            "type": "boolean"
+          },
+          "signatures": {
+            "items": {
+              "$ref": "#/components/schemas/SignatureCheck"
+            },
+            "title": "Signatures",
+            "type": "array"
+          },
+          "verified": {
+            "title": "Verified",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "record_id",
+          "record_digest_valid",
+          "record_signature_valid",
+          "signatures",
+          "alcoa",
+          "audit_events",
+          "verified"
+        ],
+        "title": "RecordVerification",
+        "type": "object"
+      },
+      "RegisterDefinition": {
+        "additionalProperties": false,
+        "properties": {
+          "spec": {
+            "$ref": "#/components/schemas/ActionSpec"
+          },
+          "validation_reference": {
+            "description": "Validation protocol or report that verifies this definition version",
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Validation Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "spec",
+          "validation_reference"
+        ],
+        "title": "RegisterDefinition",
+        "type": "object"
+      },
+      "RegisterSystem": {
+        "additionalProperties": false,
+        "properties": {
+          "base_url": {
+            "maxLength": 300,
+            "minLength": 10,
+            "title": "Base Url",
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 2000,
+            "minLength": 10,
+            "title": "Description",
+            "type": "string"
+          },
+          "gamp_category": {
+            "$ref": "#/components/schemas/GampCategory"
+          },
+          "last_reviewed_at": {
+            "description": "Date of the validation summary report or last periodic review",
+            "format": "date-time",
+            "title": "Last Reviewed At",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Name",
+            "type": "string"
+          },
+          "owner": {
+            "maxLength": 200,
+            "minLength": 2,
+            "title": "Owner",
+            "type": "string"
+          },
+          "review_interval_days": {
+            "maximum": 1095.0,
+            "minimum": 30.0,
+            "title": "Review Interval Days",
+            "type": "integer"
+          },
+          "system_id": {
+            "maxLength": 64,
+            "minLength": 2,
+            "title": "System Id",
+            "type": "string"
+          },
+          "validation_reference": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Validation Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "system_id",
+          "name",
+          "description",
+          "base_url",
+          "gamp_category",
+          "validation_reference",
+          "owner",
+          "review_interval_days",
+          "last_reviewed_at"
+        ],
+        "title": "RegisterSystem",
+        "type": "object"
+      },
+      "RequestList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RequestView"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "offset": {
+            "title": "Offset",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "limit",
+          "offset"
+        ],
+        "title": "RequestList",
+        "type": "object"
+      },
+      "RequestStatus": {
+        "enum": [
+          "pending_approval",
+          "executing",
+          "completed",
+          "failed",
+          "rejected",
+          "expired",
+          "denied"
+        ],
+        "title": "RequestStatus",
+        "type": "string"
+      },
+      "RequestView": {
+        "properties": {
+          "action_key": {
+            "title": "Action Key",
+            "type": "string"
+          },
+          "agent_id": {
+            "title": "Agent Id",
+            "type": "string"
+          },
+          "alcoa": {
+            "$ref": "#/components/schemas/AlcoaAssessment"
+          },
+          "delegation_chain": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Delegation Chain",
+            "type": "array"
+          },
+          "execution_record_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Record Id"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "inputs_digest": {
+            "title": "Inputs Digest",
+            "type": "string"
+          },
+          "outstanding_signatures": {
+            "items": {
+              "$ref": "#/components/schemas/SignatureRequirement"
+            },
+            "title": "Outstanding Signatures",
+            "type": "array"
+          },
+          "policy": {
+            "$ref": "#/components/schemas/PolicyOutcome"
+          },
+          "received_at": {
+            "format": "date-time",
+            "title": "Received At",
+            "type": "string"
+          },
+          "record_digest": {
+            "title": "Record Digest",
+            "type": "string"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "risk": {
+            "$ref": "#/components/schemas/RiskAssessment"
+          },
+          "signature_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Signature Ids",
+            "type": "array"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "status_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status Reason"
+          },
+          "system_id": {
+            "title": "System Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id",
+          "action_key",
+          "system_id",
+          "agent_id",
+          "delegation_chain",
+          "status",
+          "status_reason",
+          "inputs_digest",
+          "record_digest",
+          "risk",
+          "policy",
+          "alcoa",
+          "outstanding_signatures",
+          "signature_ids",
+          "received_at",
+          "expires_at",
+          "execution_record_id"
+        ],
+        "title": "RequestView",
+        "type": "object"
+      },
+      "ReviewMetrics": {
+        "properties": {
+          "alcoa_failures": {
+            "title": "Alcoa Failures",
+            "type": "integer"
+          },
+          "audit_chains_verified": {
+            "title": "Audit Chains Verified",
+            "type": "integer"
+          },
+          "audit_events_verified": {
+            "title": "Audit Events Verified",
+            "type": "integer"
+          },
+          "audit_integrity": {
+            "title": "Audit Integrity",
+            "type": "boolean"
+          },
+          "definitions_retired": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Definitions Retired",
+            "type": "array"
+          },
+          "definitions_validated": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Definitions Validated",
+            "type": "array"
+          },
+          "executions_completed": {
+            "title": "Executions Completed",
+            "type": "integer"
+          },
+          "executions_failed": {
+            "title": "Executions Failed",
+            "type": "integer"
+          },
+          "failure_rate": {
+            "title": "Failure Rate",
+            "type": "number"
+          },
+          "requests_by_status": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Requests By Status",
+            "type": "object"
+          },
+          "signatures_by_meaning": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "title": "Signatures By Meaning",
+            "type": "object"
+          }
+        },
+        "required": [
+          "requests_by_status",
+          "executions_completed",
+          "executions_failed",
+          "failure_rate",
+          "signatures_by_meaning",
+          "alcoa_failures",
+          "definitions_validated",
+          "definitions_retired",
+          "audit_events_verified",
+          "audit_chains_verified",
+          "audit_integrity"
+        ],
+        "title": "ReviewMetrics",
+        "type": "object"
+      },
+      "ReviewStatus": {
+        "enum": [
+          "draft",
+          "approved"
+        ],
+        "title": "ReviewStatus",
+        "type": "string"
+      },
+      "RiskAssessment": {
+        "description": "GAMP 5 functional risk assessment of one action request.",
+        "properties": {
+          "detectability": {
+            "$ref": "#/components/schemas/Level"
+          },
+          "priority": {
+            "$ref": "#/components/schemas/Level"
+          },
+          "probability": {
+            "$ref": "#/components/schemas/Level"
+          },
+          "rationale": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Rationale",
+            "type": "array"
+          },
+          "required_signatures": {
+            "items": {
+              "$ref": "#/components/schemas/SignatureRequirement"
+            },
+            "title": "Required Signatures",
+            "type": "array"
+          },
+          "risk_class": {
+            "description": "1 is the highest risk class",
+            "maximum": 3.0,
+            "minimum": 1.0,
+            "title": "Risk Class",
+            "type": "integer"
+          },
+          "severity": {
+            "$ref": "#/components/schemas/Level"
+          }
+        },
+        "required": [
+          "severity",
+          "probability",
+          "risk_class",
+          "detectability",
+          "priority",
+          "rationale",
+          "required_signatures"
+        ],
+        "title": "RiskAssessment",
+        "type": "object"
+      },
+      "Role": {
+        "description": "Enterprise IdP roles of human users.",
+        "enum": [
+          "gxp-system-owner",
+          "gxp-approver",
+          "gxp-qa",
+          "gxp-auditor"
+        ],
+        "title": "Role",
+        "type": "string"
+      },
+      "SignatureCheck": {
+        "properties": {
+          "cryptographically_valid": {
+            "title": "Cryptographically Valid",
+            "type": "boolean"
+          },
+          "linked_to_record": {
+            "title": "Linked To Record",
+            "type": "boolean"
+          },
+          "meaning": {
+            "$ref": "#/components/schemas/SignatureMeaning"
+          },
+          "signature_id": {
+            "title": "Signature Id",
+            "type": "string"
+          },
+          "signed_at": {
+            "format": "date-time",
+            "title": "Signed At",
+            "type": "string"
+          },
+          "signer": {
+            "title": "Signer",
+            "type": "string"
+          }
+        },
+        "required": [
+          "signature_id",
+          "meaning",
+          "signer",
+          "signed_at",
+          "cryptographically_valid",
+          "linked_to_record"
+        ],
+        "title": "SignatureCheck",
+        "type": "object"
+      },
+      "SignatureList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ElectronicSignature"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "SignatureList",
+        "type": "object"
+      },
+      "SignatureMeaning": {
+        "description": "Meaning of an electronic signature (21 CFR 11.50(a)(3)).",
+        "enum": [
+          "approval",
+          "quality-approval",
+          "rejection",
+          "validation-approval",
+          "retirement",
+          "review"
+        ],
+        "title": "SignatureMeaning",
+        "type": "string"
+      },
+      "SignatureOutcome": {
+        "properties": {
+          "execution_record_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Record Id"
+          },
+          "record_status": {
+            "title": "Record Status",
+            "type": "string"
+          },
+          "signature": {
+            "$ref": "#/components/schemas/ElectronicSignature"
+          }
+        },
+        "required": [
+          "signature",
+          "record_status"
+        ],
+        "title": "SignatureOutcome",
+        "type": "object"
+      },
+      "SignatureRequirement": {
+        "properties": {
+          "meaning": {
+            "$ref": "#/components/schemas/SignatureMeaning"
+          },
+          "role": {
+            "$ref": "#/components/schemas/Role"
+          }
+        },
+        "required": [
+          "meaning",
+          "role"
+        ],
+        "title": "SignatureRequirement",
+        "type": "object"
+      },
+      "SourceRecord": {
+        "additionalProperties": false,
+        "description": "Pointer to the original record an action is based on (ALCOA+ original).",
+        "properties": {
+          "digest": {
+            "title": "Digest",
+            "type": "string"
+          },
+          "uri": {
+            "maxLength": 500,
+            "minLength": 3,
+            "title": "Uri",
+            "type": "string"
+          }
+        },
+        "required": [
+          "uri",
+          "digest"
+        ],
+        "title": "SourceRecord",
+        "type": "object"
+      },
+      "SubmitAction": {
+        "additionalProperties": false,
+        "properties": {
+          "action_id": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Action Id",
+            "type": "string"
+          },
+          "context": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "maxProperties": 20,
+            "title": "Context",
+            "type": "object"
+          },
+          "inputs": {
+            "additionalProperties": true,
+            "title": "Inputs",
+            "type": "object"
+          },
+          "justification": {
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Justification",
+            "type": "string"
+          },
+          "performed_at": {
+            "description": "When the agent performed the activity (UTC)",
+            "format": "date-time",
+            "title": "Performed At",
+            "type": "string"
+          },
+          "source_records": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/SourceRecord"
+            },
+            "maxItems": 20,
+            "title": "Source Records",
+            "type": "array"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omit to use the latest validated version",
+            "title": "Version"
+          }
+        },
+        "required": [
+          "action_id",
+          "inputs",
+          "justification",
+          "performed_at"
+        ],
+        "title": "SubmitAction",
+        "type": "object"
+      },
+      "SystemList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ValidatedSystem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "SystemList",
+        "type": "object"
+      },
+      "SystemStatus": {
+        "enum": [
+          "validated",
+          "suspended",
+          "retired"
+        ],
+        "title": "SystemStatus",
+        "type": "string"
+      },
+      "ValidatedSystem": {
+        "description": "A computerized system in validated state that agent actions may touch.",
+        "properties": {
+          "base_url": {
+            "description": "HTTPS endpoint of the system's integration API",
+            "title": "Base Url",
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 2000,
+            "minLength": 10,
+            "title": "Description",
+            "type": "string"
+          },
+          "gamp_category": {
+            "$ref": "#/components/schemas/GampCategory"
+          },
+          "last_reviewed_at": {
+            "format": "date-time",
+            "title": "Last Reviewed At",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Name",
+            "type": "string"
+          },
+          "owner": {
+            "description": "Accountable system owner",
+            "maxLength": 200,
+            "minLength": 2,
+            "title": "Owner",
+            "type": "string"
+          },
+          "registered_at": {
+            "format": "date-time",
+            "title": "Registered At",
+            "type": "string"
+          },
+          "review_interval_days": {
+            "maximum": 1095.0,
+            "minimum": 30.0,
+            "title": "Review Interval Days",
+            "type": "integer"
+          },
+          "status": {
+            "$ref": "#/components/schemas/SystemStatus",
+            "default": "validated"
+          },
+          "system_id": {
+            "title": "System Id",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "validation_reference": {
+            "description": "Validation summary report identifier",
+            "maxLength": 120,
+            "minLength": 3,
+            "title": "Validation Reference",
+            "type": "string"
+          }
+        },
+        "required": [
+          "system_id",
+          "name",
+          "description",
+          "base_url",
+          "gamp_category",
+          "validation_reference",
+          "owner",
+          "review_interval_days",
+          "last_reviewed_at",
+          "registered_at",
+          "updated_at"
+        ],
+        "title": "ValidatedSystem",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "ValidationStatus": {
+        "enum": [
+          "draft",
+          "validated",
+          "retired"
+        ],
+        "title": "ValidationStatus",
+        "type": "string"
+      }
+    }
+  },
+  "info": {
+    "description": "Executes AI agent actions against validated systems through registered, versioned action definitions: GAMP 5 risk classification, 21 CFR Part 11 electronic signatures, ALCOA+ data integrity checks and signed execution records.",
+    "title": "GxP Agent Runtime",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/.well-known/agent-card.json": {
+      "get": {
+        "operationId": "card__well_known_agent_card_json_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Card  Well Known Agent Card Json Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Card",
+        "tags": [
+          "a2a"
+        ]
+      }
+    },
+    "/.well-known/jwks.json": {
+      "get": {
+        "description": "Public keys that verify e-signature manifests, execution records and audit chains.",
+        "operationId": "jwks__well_known_jwks_json_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Jwks  Well Known Jwks Json Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Jwks",
+        "tags": [
+          "discovery"
+        ]
+      }
+    },
+    "/a2a": {
+      "post": {
+        "operationId": "jsonrpc_a2a_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Jsonrpc",
+        "tags": [
+          "a2a"
+        ]
+      }
+    },
+    "/v1/action-definitions": {
+      "get": {
+        "operationId": "list_definitions_v1_action_definitions_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/ValidationStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefinitionList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Definitions",
+        "tags": [
+          "registry"
+        ]
+      },
+      "post": {
+        "operationId": "register_definition_v1_action_definitions_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDefinition"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionDefinition"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register Definition",
+        "tags": [
+          "registry"
+        ]
+      }
+    },
+    "/v1/action-definitions/{action_id}/{version}": {
+      "get": {
+        "operationId": "get_definition_v1_action_definitions__action_id___version__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "action_id",
+            "required": true,
+            "schema": {
+              "title": "Action Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "version",
+            "required": true,
+            "schema": {
+              "title": "Version",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionDefinition"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Definition",
+        "tags": [
+          "registry"
+        ]
+      }
+    },
+    "/v1/action-requests": {
+      "get": {
+        "operationId": "list_requests_v1_action_requests_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RequestStatus"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "system_id",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "maxLength": 64,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "System Id"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 100,
+              "maximum": 500,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "minimum": 0,
+              "title": "Offset",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Requests",
+        "tags": [
+          "approvals"
+        ]
+      },
+      "post": {
+        "operationId": "submit_v1_action_requests_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitAction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Submit",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/v1/action-requests/{request_id}": {
+      "get": {
+        "operationId": "get_request_v1_action_requests__request_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Request",
+        "tags": [
+          "approvals"
+        ]
+      }
+    },
+    "/v1/actions": {
+      "get": {
+        "operationId": "catalog_v1_actions_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionCatalog"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Catalog",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/v1/actions/assess": {
+      "post": {
+        "operationId": "assess_v1_actions_assess_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitAction"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActionPreview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Assess",
+        "tags": [
+          "agents"
+        ]
+      }
+    },
+    "/v1/audit/verification": {
+      "get": {
+        "operationId": "verify_audit_v1_audit_verification_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditVerification"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Verify Audit",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/v1/execution-records/{record_id}": {
+      "get": {
+        "operationId": "get_record_v1_execution_records__record_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "record_id",
+            "required": true,
+            "schema": {
+              "title": "Record Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionRecord"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Record",
+        "tags": [
+          "records"
+        ]
+      }
+    },
+    "/v1/execution-records/{record_id}/verification": {
+      "get": {
+        "operationId": "verify_record_v1_execution_records__record_id__verification_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "record_id",
+            "required": true,
+            "schema": {
+              "title": "Record Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordVerification"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Verify Record",
+        "tags": [
+          "records"
+        ]
+      }
+    },
+    "/v1/periodic-reviews": {
+      "post": {
+        "operationId": "generate_review_v1_periodic_reviews_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateReview"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeriodicReview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Generate Review",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/v1/periodic-reviews/{review_id}": {
+      "get": {
+        "operationId": "get_review_v1_periodic_reviews__review_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "review_id",
+            "required": true,
+            "schema": {
+              "title": "Review Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeriodicReview"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Review",
+        "tags": [
+          "reviews"
+        ]
+      }
+    },
+    "/v1/signatures": {
+      "get": {
+        "operationId": "list_signatures_v1_signatures_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "record_type",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/RecordType"
+            }
+          },
+          {
+            "in": "query",
+            "name": "record_id",
+            "required": true,
+            "schema": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Record Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignatureList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Signatures",
+        "tags": [
+          "signatures"
+        ]
+      },
+      "post": {
+        "operationId": "apply_signature_v1_signatures_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplySignature"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignatureOutcome"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Apply Signature",
+        "tags": [
+          "signatures"
+        ]
+      }
+    },
+    "/v1/signatures/challenges": {
+      "post": {
+        "operationId": "create_challenge_v1_signatures_challenges_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChallenge"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChallengeView"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Create Challenge",
+        "tags": [
+          "signatures"
+        ]
+      }
+    },
+    "/v1/systems": {
+      "get": {
+        "operationId": "list_systems_v1_systems_get",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemList"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "List Systems",
+        "tags": [
+          "registry"
+        ]
+      },
+      "post": {
+        "operationId": "register_system_v1_systems_post",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterSystem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidatedSystem"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Register System",
+        "tags": [
+          "registry"
+        ]
+      }
+    },
+    "/v1/systems/{system_id}": {
+      "get": {
+        "operationId": "get_system_v1_systems__system_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "system_id",
+            "required": true,
+            "schema": {
+              "title": "System Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "authorization",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidatedSystem"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get System",
+        "tags": [
+          "registry"
+        ]
+      }
+    }
+  }
+}

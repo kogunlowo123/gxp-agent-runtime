@@ -1,0 +1,108 @@
+{
+  "$defs": {
+    "RecordType": {
+      "enum": [
+        "action-request",
+        "action-definition",
+        "periodic-review"
+      ],
+      "title": "RecordType",
+      "type": "string"
+    },
+    "SignatureMeaning": {
+      "description": "Meaning of an electronic signature (21 CFR 11.50(a)(3)).",
+      "enum": [
+        "approval",
+        "quality-approval",
+        "rejection",
+        "validation-approval",
+        "retirement",
+        "review"
+      ],
+      "title": "SignatureMeaning",
+      "type": "string"
+    }
+  },
+  "$id": "https://github.com/kogunlowo123/gxp-agent-runtime/schemas/electronic-signature.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "A Part 11 electronic signature, cryptographically linked to its record.",
+  "properties": {
+    "auth_methods": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Auth Methods",
+      "type": "array"
+    },
+    "auth_time": {
+      "format": "date-time",
+      "title": "Auth Time",
+      "type": "string"
+    },
+    "challenge_id": {
+      "title": "Challenge Id",
+      "type": "string"
+    },
+    "key_id": {
+      "title": "Key Id",
+      "type": "string"
+    },
+    "meaning": {
+      "$ref": "#/$defs/SignatureMeaning"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    },
+    "record_digest": {
+      "title": "Record Digest",
+      "type": "string"
+    },
+    "record_id": {
+      "title": "Record Id",
+      "type": "string"
+    },
+    "record_type": {
+      "$ref": "#/$defs/RecordType"
+    },
+    "signature_id": {
+      "title": "Signature Id",
+      "type": "string"
+    },
+    "signed_at": {
+      "format": "date-time",
+      "title": "Signed At",
+      "type": "string"
+    },
+    "signer_name": {
+      "title": "Signer Name",
+      "type": "string"
+    },
+    "signer_subject": {
+      "title": "Signer Subject",
+      "type": "string"
+    },
+    "value": {
+      "default": "",
+      "title": "Value",
+      "type": "string"
+    }
+  },
+  "required": [
+    "signature_id",
+    "record_type",
+    "record_id",
+    "record_digest",
+    "signer_subject",
+    "signer_name",
+    "meaning",
+    "reason",
+    "signed_at",
+    "auth_time",
+    "auth_methods",
+    "challenge_id",
+    "key_id"
+  ],
+  "title": "ElectronicSignature",
+  "type": "object"
+}

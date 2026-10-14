@@ -1,0 +1,13 @@
+apiVersion: v2
+name: gxp-agent-runtime
+description: GxP-aware runtime executing AI agent actions against validated systems under 21 CFR Part 11 controls
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+kubeVersion: ">=1.27.0-0"
+home: https://github.com/kogunlowo123/gxp-agent-runtime
+sources:
+  - https://github.com/kogunlowo123/gxp-agent-runtime
+maintainers:
+  - name: kogunlowo123
+    url: https://github.com/kogunlowo123
